@@ -2,11 +2,18 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../../../server';
 
+import { existingUser } from '../../db/mockdata/userdata';
+import { generateToken } from '../../../utils/helpers.utils';
 // configure chai to use expect
 chai.use(chaiHttp);
 const { expect } = chai;
 
 let token = '';
+const jwtToken = generateToken(existingUser);
+const falseToken = generateToken({
+  id: '4c6fab4c-3926-4be5-166c-4a911165cd35',
+});
+
 const userRequestObject = {
   email: 'igbominadeveloper@ah.com',
   password: 'password1',
@@ -140,6 +147,7 @@ describe('CREATE COMMENT', () => {
         Authorization: token,
       })
       .end((err, res) => {
+        console.log(res.body);
         expect(res.status).to.equal(200);
         expect(res.body.message).to.equal('You edited this comment');
         expect(res.body.data.updatedComment[1][0].body).to.equal(
@@ -160,8 +168,7 @@ describe('CREATE COMMENT', () => {
       })
       .set('Accept', 'application/json')
       .set({
-        Authorization:
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE4NjUxOTg5LTczMmYtNGMwNC05ZGRjLWVhMWY3MzgxOGZkMSIsImVtYWlsIjoibmVkeXVkb21iYXRAYWguY29tIiwiaWF0IjoxNTU1NDI3MTE3LCJleHAiOjE1NTgwMTkxMTd9.WqOZX4UyP08wmOx-wYYfVmxFqWzLnvlK_t8MeRiakno',
+        Authorization: falseToken,
       })
       .end((err, res) => {
         expect(res.status).to.equal(401);

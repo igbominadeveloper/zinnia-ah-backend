@@ -15,6 +15,7 @@ import {
   getAllArticles,
   createArticle,
   removeArticle,
+  updateArticle,
   likeAnArticle,
   unlikeAnArticle,
   shareArticleViaEmail,
@@ -23,7 +24,9 @@ import {
   reportArticle,
   rateArticle,
 } from './controllers/articles.controller';
-import checkAuthorizedUser from './middlewares/authorized-user.middleware';
+import { checkAuthorizedUser } from './middlewares/authorized-user.middleware';
+import validatorInput from './middlewares/schema-validator.middleware';
+import { articleSchema } from '../utils/validation-schema.utils';
 
 const articleRouter = Router();
 
@@ -121,7 +124,65 @@ articleRouter.delete('/:article_id', removeArticle);
  *       500:
  *         description: ran
  */
-articleRouter.post('/', createArticle);
+articleRouter.post(
+  '/',
+  validatorInput(articleSchema),
+  checkAuthorizedUser,
+  createArticle,
+);
+
+/**
+ * @swagger
+ *
+ * /api/v1/article:
+ *   put:
+ *     tags:
+ *       - article
+ *     description: users can update an article.
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: title
+ *         description: the title of the article to be updated.
+ *         in: body
+ *         required: true
+ *       - name: description
+ *         description: the summary of the article.
+ *         in: body
+ *         required: true
+ *       - name: body
+ *         description: the content of the article.
+ *         in: body
+ *         required: true
+ *       - name: images
+ *         description: url to all images in the articles. {string} seperated with a comma.
+ *         in: body
+ *       - name: tags
+ *         description: the tag list.
+ *         in: body
+ *     request:
+ *         content:
+ *         - application/json
+ *         schema:
+ *           type: array
+ *           items:
+ *         $ref: '#/definitions/users'
+ *     responses:
+ *       200:
+ *         description: article updated
+ *       400:
+ *         description: Bad request.
+ *       401:
+ *         description: Authorization information is missing or invalid.
+ *       500:
+ *         description: ran
+ */
+articleRouter.put(
+  '/:slug',
+  validatorInput(articleSchema),
+  checkAuthorizedUser,
+  updateArticle,
+);
 
 /**
  * @swagger

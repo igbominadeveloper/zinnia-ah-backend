@@ -14,7 +14,7 @@ const authRouter = Router();
 /**
  * @swagger
  *
- * /api/v1/users:
+ * /api/v1/auth/signup:
  *   post:
  *     description: User Registration Endpoint
  *     produces:
@@ -101,7 +101,7 @@ authRouter.get(
 /**
  * @swagger
  *
- * /api/v1/users/login:
+ * /api/v1/auth/login:
  *   post:
  *     description: User login
  *     produces:

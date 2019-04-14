@@ -10,7 +10,7 @@ import {
   getUsersComments,
 } from './controllers/users.controller';
 
-import checkAuthorizedUser from './middlewares/authorized-user.middleware';
+import { checkAuthorizedUser } from './middlewares/authorized-user.middleware';
 
 const userRouter = Router();
 

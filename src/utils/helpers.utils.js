@@ -104,6 +104,14 @@ export const checkDuplicateUser = async (email, username) => {
   return existingUser !== null;
 };
 
+/**
+ *
+ * @param {object} res response object
+ * @param {number} statusCode
+ * @param {string} message
+ * @param {*} errors
+ * @returns {object} res
+ */
 export const errorResponse = (res, statusCode, message, errors) =>
   res.status(statusCode).json({
     status: 'error',
@@ -111,6 +119,14 @@ export const errorResponse = (res, statusCode, message, errors) =>
     errors,
   });
 
+/**
+ *
+ * @param {object} res response object
+ * @param {number} statusCode
+ * @param {string} message
+ * @param {*} data
+ * @returns {object} res
+ */
 export const successResponse = (res, statusCode, message, data) =>
   res.status(statusCode).json({
     status: 'success',
@@ -152,14 +168,17 @@ export function comparePassword(hashedPassword, password) {
  * @returns {string} token
  */
 export function generateToken(payload, expiresIn = '30days') {
-  const token = jwt.sign(payload, 'SECRET_KEY', {
-    expiresIn,
-  });
+  const token = jwt.sign(payload, SECRET_KEY, { expiresIn });
   return token;
 }
 
+/**
+ *
+ * @param {string} token
+ * @returns {object/null} decoded tokens
+ */
 export const verifyToken = async token => {
-  return await jwt.verify(token, 'SECRET_KEY', (err, data) => {
+  return await jwt.verify(token, SECRET_KEY, (err, data) => {
     if (err) {
       return null;
     }
