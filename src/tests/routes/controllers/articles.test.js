@@ -83,15 +83,14 @@ describe('Articles', () => {
         .set('x-access-token', jwtToken)
         .send(articleRequestObject)
         .end((err, res) => {
-          expect(res.status).to.eql(415);
-          expect(res.body.message).to.eql(
-            'tags should be an array, string provided',
-          );
+          expect(res.status).to.eql(422);
+          expect(res.body.errors[0]).to.eql('tags must be an array');
           done();
         });
     });
 
     it('should fail when all fields are not supplied', done => {
+      articleRequestObject.tags = ['string', 'tagged'];
       chai
         .request(app)
         .post(endPoint)
@@ -104,6 +103,7 @@ describe('Articles', () => {
           done();
         });
     });
+
     it('should fail when token is invalid or not supplied', done => {
       chai
         .request(app)
@@ -113,20 +113,6 @@ describe('Articles', () => {
           expect(res.status).to.equal(401);
           expect(res.body.status).to.equal('error');
           expect(res.body.message).to.equal('Please provide a JWT token');
-          done();
-        });
-    });
-
-    it('should create article successfully, with valid user input', done => {
-      chai
-        .request(app)
-        .post(endPoint)
-        .set('x-access-token', jwtToken)
-        .send(articleRequestObject)
-        .end((err, res) => {
-          expect(res.status).to.eql(201);
-          expect(res.body.status).to.eql('success');
-          expect(res.body.data).to.be.an('object');
           done();
         });
     });

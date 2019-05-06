@@ -32,7 +32,7 @@ const { Article, User, Report, ReadingStat, Rating, Comment } = models;
  * @returns {object} article creation error/success message.
  */
 export async function createArticle(req, res) {
-  const { body, images } = req.body;
+  const { body, images, tags } = req.body;
   try {
     const timeToReadArticle = calculateTimeToReadArticle({
       images: images || [],
@@ -47,14 +47,12 @@ export async function createArticle(req, res) {
       slug: slug(
         `${req.body.title}-${crypto.randomBytes(12).toString('base64')}`,
       ).toLowerCase(),
-      description,
-      body,
       readTime: timeToReadArticle,
       subscriptionType: FREE,
       status: DRAFT,
     });
+
     if (tags) {
-      console.log(tags);
       const createdTag = await createTag(tags, createdArticle.id);
       if (!createdTag) {
         return errorResponse(
